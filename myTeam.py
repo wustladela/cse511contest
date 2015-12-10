@@ -105,6 +105,30 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
     features = util.Counter()
     successor = self.getSuccessor(gameState, action)
     features['successorScore'] = self.getScore(successor)
+    #agentState1 = gameState.getAgentState(1)
+    #print agentState1: #Ghost: (x,y)=(28.0, 4.0), North
+    defendingFood = self.getFoodYouAreDefending(successor)#returns a map of all your own food
+    getScore = self.getScore(successor)
+    print "getScore:"
+    print getScore
+    prevObs = self.getPreviousObservation()
+    redIndex = gameState.getRedTeamIndices()
+    print "redIndex:"
+    print redIndex
+
+    indices = successor.getRedTeamIndices()
+    features['getRedTeamIndices'] = indices
+    features['getAgentDistances'] = gameState.getAgentDistances()
+
+    testAgentState = gameState.getAgentState(1) #Ghost: (x,y)=(30.0, 9.0), South...etc
+
+    for i in gameState.getRedTeamIndices():
+        if gameState.isOnRedTeam(i):
+            pos = gameState.getAgentPosition(i)
+            features["agent ",i," state"] = gameState.getAgentState(i)
+    print "features"
+    print features
+
 
     # Compute distance to the nearest food
     foodList = self.getFood(successor).asList()
@@ -112,6 +136,7 @@ class OffensiveReflexAgent(ReflexCaptureAgent):
       myPos = successor.getAgentState(self.index).getPosition()
       minDistance = min([self.getMazeDistance(myPos, food) for food in foodList])
       features['distanceToFood'] = minDistance
+
     return features
 
   def getWeights(self, gameState, action):
